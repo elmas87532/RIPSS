@@ -1,0 +1,247 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+a{
+	text-decoration: none;
+}
+body{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+	background-color: #E0E0E0;
+	font-family: '微軟正黑體';
+}
+
+input,button,select,textarea{outline:none}
+ *:focus { outline: none; }
+.clear{
+	clear:both;
+}
+.wrapper{
+	width: 1000px;
+	height: auto;
+	margin: auto;
+}
+.header{
+	width: 515px;
+	height: 187px;
+	margin: auto;
+}
+.header h1{
+	background: url(images/logo.png);
+	width: 515px;
+	height: 167px;
+	text-indent: -3333px;
+	margin: auto;
+	margin-top: 20px;
+}
+.header img{
+	display: none;
+}
+.content{
+	width: 100%;
+}
+.bone{
+	width: 150px;
+	height: 50px;
+	background-color: #BEBEBE;
+	border-top-left-radius: 5px;
+	float: left;
+}
+.bone h2{
+	background: url(images/bone.png);
+	width: 78px;
+	height: 29px;
+	text-indent: -3333px;
+	margin: auto;
+	margin-top: 10px;
+}
+.bone:hover{
+	background-color: #ADADAD;
+}
+.grave{
+	width: 150px;
+	height: 50px;
+	background-color: #F0F0F0;
+	border-top-right-radius: 5px;
+	float: left;
+}
+.grave h2{
+	background: url(images/grave.png);
+	width: 78px;
+	height: 29px;
+	text-indent: -3333px;
+	margin: auto;
+	margin-top: 10px;
+}
+.main-content{
+	width: calc(100% - 40px);
+	height: auto;
+	padding: 20px;
+	background-color: #F0F0F0;
+	border-top-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	margin-bottom: 20px;
+	box-shadow:4px 4px 12px -2px rgba(20%,20%,40%,0.5);
+}
+.select-options{
+	width: auto;
+	margin-bottom: 20px;
+	float: right;
+}
+.select-options img{
+	float: left;
+	margin-top: 8.5px;
+	margin-right: 2px;
+}
+#heart{
+	float: left;
+	margin-top: 11px;
+	margin-right: 5px;
+}
+.address{
+	float: left;
+	margin-right: 10px;
+}
+#get-place-destrict{
+	width: 60px;
+	height: 41px;
+	border: 0.5px solid #BEBEBE;
+	font-family: '微軟正黑體';
+	font-size: 16px;
+	margin-right: 5px;
+	float: left;
+}
+#get-place-address{
+	width: 300px;
+	height: 41px;
+	padding-left: 10px;
+	padding-right: 10px;
+	border: 0.5px solid #BEBEBE;
+	font-family: '微軟正黑體';
+	font-size: 16px;
+	float: left;
+}
+.address input[type='image']{
+	width: 41px;
+	height: 39px;
+	border: 0.5px solid #BEBEBE;
+	background-color: #BEBEBE;
+	float: left;
+}
+.address input[type='image']:hover{
+	background-color: #ADADAD;
+}
+.reset{
+	width: 80px;
+	height: 41px;
+	border: none;
+	border-radius: 5px;
+	color: #FFF;
+	font-family: '微軟正黑體';
+	font-size: 14px;
+	background-color: #00AEAE;
+	cursor: pointer;
+	float: left;
+}
+.reset:hover{
+	background-color: #009393;
+}
+#map{
+	width: 100%;
+	height: 530px;
+}
+footer{
+	text-align: center;
+	color: #4F4F4F;
+}
+@media only screen and (max-width: 1080px) {
+.wrapper{
+	width: 96%;
+	padding: 2%;
+}
+}
+@media only screen and (max-width: 720px) {
+.select-options{
+	width: 100%;
+	float: none;
+	margin-bottom: 10px;
+}
+.address{
+	width: calc(100% - 222px);
+	margin-bottom: 5px;
+}
+#get-place-address{
+	width: calc(100% - 108px);
+	height: 41px;
+	padding-left: 10px;
+	padding-right: 10px;
+	border: 0.5px solid #BEBEBE;
+	font-family: '微軟正黑體';
+	font-size: 16px;
+	float: left;
+}
+}
+@media only screen and (max-width: 620px) {
+.address{
+	width: calc(100% - 132px);
+	margin-right: 0;
+}
+.reset{
+	float: right;
+}
+}
+@media only screen and (max-width: 540px) {
+.header{
+	width: 100%;
+	height: auto;
+}
+.header h1{
+	display: none;
+}
+.header img{
+	display: block;
+	max-width: 100%;
+}
+.address{
+	width: calc(100% - 85px);
+	margin-right: 5px;
+	float: left;
+}
+#heart{
+	margin-bottom: 5px;
+}
+#get-place-destrict{
+	width: calc(30% - 48px);
+	margin-right: 5px;
+	float: left;
+}
+#get-place-address{
+	width: calc(80% - 48px);
+	float: left;
+}
+.reset{
+	float: left;
+}
+}
