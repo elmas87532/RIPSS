@@ -1,0 +1,384 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html"; charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="css/bone.css">
+		<link rel="Shortcut Icon" type="image/x-icon" href="css/images/icon.ico">
+		<script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCb1nd7i3lNXGUx5v9-7kKrjbOLXYKeWu0&signed_in=true&callback=initMap" async defer></script>
+		<script type="text/javascript">
+		function loadXMLFile(file){
+
+		      var xmlDoc;
+
+		      if (window.ActiveXObject){
+		         xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+		         xmlDoc.async = false;
+		         xmlDoc.load(file);
+		         return xmlDoc;
+		      } else if (document.implementation && document.implementation.createDocument){
+		         var xmlInfo = new XMLHttpRequest();  
+		         xmlInfo.open("GET", file, false);
+		         xmlInfo.send(null); 
+		         xmlDoc = xmlInfo.responseXML;
+		         return xmlDoc;
+		      }else{
+		         alert("您的瀏覽器不支援Javascript!! ");
+		      }
+		}
+
+
+		var districtName="高雄市楠梓區";
+		var reliType="all";
+		var yourDistrict="NA";
+		var yourAddress="NA";
+		var yourReligion="all";
+
+		function getView(d){
+		console.log(d);
+		districtName="高雄市"+d+"區";
+		yourDistrict="NA";
+		yourAddress="NA";
+		yourReligion="all";
+		initMap();
+		}
+
+		function getReligion(r){
+		  reliType=r;
+		  yourDistrict="NA";
+		  yourAddress="NA";
+		  yourReligion="all";
+		  console.log(r);
+		  console.log(districtName);
+		  initMap();
+		}
+
+		function getPlace(){
+			yourDistrict=document.getElementById("get-place-destrict").value;
+			yourAddress=document.getElementById("get-place-address").value;
+			yourReligion=document.getElementById("get-place-religion").value;
+
+			yourDistrict="高雄市"+yourDistrict+"區";
+			console.log('gp');
+			initMap();
+
+		}
+
+		function distance(lat1,lon1,lat2,lon2) {
+ 			var R = 6371; // km (change this constant to get miles)
+ 			var dLat = (lat2-lat1) * Math.PI / 180;
+ 			var dLon = (lon2-lon1) * Math.PI / 180;
+ 			var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+ 			 Math.cos(lat1 * Math.PI / 180 ) * Math.cos(lat2 * Math.PI / 180 ) *
+ 			 Math.sin(dLon/2) * Math.sin(dLon/2);
+ 			var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+ 			var d = R * c;
+ 			/*if (d>1) return Math.round(d)+"km";
+			 else if (d<=1) return Math.round(d*1000)+"m";*/
+			 return d;
+		}
+
+		var bNames = new Array();
+		var bDistrict = new Array();
+		var bAddress = new Array();
+		var bReli = new Array();
+		var ripLen;
+
+		function initMap() {
+		  var myLatLng = "";
+
+		  var map = new google.maps.Map(document.getElementById('map'), {
+		    zoom: 13,
+		    center: myLatLng
+		  });
+
+		  var infowindow = null;
+
+		 /* window.onload=function() { */
+		     var xmlFile="bone.xml";
+		     var xmlData=loadXMLFile(xmlFile);
+		     var ripLen=xmlData.getElementsByTagName("District").length;
+
+
+		      /*----------------district---------------*/
+
+		      var Dxml=loadXMLFile("https://maps.googleapis.com/maps/api/geocode/xml?address="+districtName+"&key=AIzaSyCuGpji_q09xilkb1ytmgIhK0_uG6OQkWo");
+		      var center1=Dxml.getElementsByTagName("lat")[0].firstChild.nodeValue;
+		      var center2=Dxml.getElementsByTagName("lng")[0].firstChild.nodeValue;
+
+		      var myLatLng={lat: parseFloat(center1), lng: parseFloat(center2)};
+		      var map = new google.maps.Map(document.getElementById('map'), {
+		      zoom: 13,
+		      center: myLatLng
+		      });
+		      var contentString=new Array();
+		      var contentStr="";
+
+		      infowindow = new google.maps.InfoWindow({
+		      content: "holding..."
+		      });
+
+		      //--------------------------------------
+
+		      var markers=new Array();
+		      var olocate1="";
+		      var olocate2="";
+		      var Txml=0;
+		      var urlocate1="";
+		      var urlocate2="";
+		      var Pxml=0;
+		      var marker=0;
+
+		      
+		      if (yourDistrict !== "NA" && yourAddress !== "NA") {
+		      		Pxml=loadXMLFile("https://maps.googleapis.com/maps/api/geocode/xml?address="+yourDistrict+yourAddress+"&key=AIzaSyCuGpji_q09xilkb1ytmgIhK0_uG6OQkWo");
+		      		urlocate1=Pxml.getElementsByTagName("lat")[0].firstChild.nodeValue;
+		        	urlocate2=Pxml.getElementsByTagName("lng")[0].firstChild.nodeValue;
+		        	var d=0;
+		        	var tmpd=0;
+		        	var getlocate1 = 0;
+		   		   	var getlocate2 = 0;
+		        	var getdistrict="";
+		     	 	var getaddress="";
+		    	  	var getreligion="";
+		    	  	var gettel="";
+		    	  	var getname="";
+
+		      		for (var i=0 ; i<ripLen ; i++) {
+				      	/*--------check_district--------*/
+					        bDistrict[i] = xmlData.getElementsByTagName("District")[i].firstChild.nodeValue;
+					        if (bDistrict[i] !== yourDistrict) {
+					          continue;
+					        }
+
+					        /*--------check_reliType--------*/
+					        if (yourReligion !== "all") {
+					          bReli[i] = xmlData.getElementsByTagName("Religion")[i].firstChild.nodeValue;
+					          if (bReli[i] !== yourReligion) {
+					            continue;
+					          }
+					        }
+
+					        bAddress[i] = xmlData.getElementsByTagName("Address")[i].firstChild.nodeValue;
+					        Txml=loadXMLFile("https://maps.googleapis.com/maps/api/geocode/xml?address="+bDistrict[i]+bAddress[i]+"&key=AIzaSyCuGpji_q09xilkb1ytmgIhK0_uG6OQkWo");
+
+		        
+					        olocate1=Txml.getElementsByTagName("lat")[0].firstChild.nodeValue;
+					        olocate2=Txml.getElementsByTagName("lng")[0].firstChild.nodeValue;
+					        console.log("1: "+olocate1+" 2:"+olocate2);
+
+					        tmpd=distance(urlocate1,olocate1,urlocate2,olocate2);
+					        if (d <= tmpd) {
+					        	d=tmpd;
+					        	getlocate1=olocate1;
+		        				getlocate2=olocate2;
+		        				getdistrict=bDistrict[i];
+		        				getaddress=bAddress[i];
+		        				gettel=xmlData.getElementsByTagName("Tel")[i].firstChild.nodeValue;
+		        				getreligion=xmlData.getElementsByTagName("Religion")[i].firstChild.nodeValue;
+		        				getname=xmlData.getElementsByTagName("Name")[i].firstChild.nodeValue;
+					        }
+
+					      }
+					       contentStr='<div id="content">'+
+					      '<div id="siteNotice">'+
+					      '</div>'+
+					      '<h1 id="firstHeading" class="firstHeading">'+getname+'</h1>'+
+					      '<div id="bodyContent">'+
+					      '<p>區域：'+getdistrict+'</p>'+
+					      '<p>地址：'+getaddress+'</p>'+
+					      '<p>宗教：'+getreligion+'</p>'+
+					      '<p>電話：'+gettel+'</p>'+
+					      '</div>'+
+					      '</div>';
+
+					        var image = 'css/images/bone_icon.png';
+					        marker=new google.maps.Marker({
+					        position: {lat: parseFloat(getlocate1), lng: parseFloat(getlocate2)},
+					        map: map,
+					        title: getname,
+					        icon: image,
+					        html: contentStr
+					        });
+
+					        map.setCenter(marker.getPosition());
+
+					        google.maps.event.addListener(marker, 'click', function () {
+					        // where I have added .html to the marker object.
+					        infowindow.setContent(this.html);
+					        infowindow.open(map, this);
+					        });
+
+					        var directionsService = new google.maps.DirectionsService;
+  							var directionsDisplay = new google.maps.DirectionsRenderer;
+
+  							directionsDisplay.setMap(map);
+
+  							directionsService.route({
+ 							   origin: {lat: parseFloat(urlocate1), lng: parseFloat(urlocate2)},
+ 							   destination: {lat: parseFloat(getlocate1), lng: parseFloat(getlocate2)},
+							    travelMode: google.maps.TravelMode.DRIVING
+ 								 }, function(response, status) {
+  							  if (status === google.maps.DirectionsStatus.OK) {
+  							    directionsDisplay.setDirections(response);
+  							  } else {
+  							   window.alert('Directions request failed due to ' + status);
+  							  }
+							  });
+
+
+
+		      	}else{
+
+		      for (var i=0 ; i<ripLen ; i++) {
+
+	      	/*--------check_district--------*/
+		        bDistrict[i] = xmlData.getElementsByTagName("District")[i].firstChild.nodeValue;
+		        if (bDistrict[i] !== districtName) {
+		          continue;
+		        }
+
+		        /*--------check_reliType--------*/
+		        if (reliType !== "all") {
+		          bReli[i] = xmlData.getElementsByTagName("Religion")[i].firstChild.nodeValue;
+		          if (bReli[i] !== reliType) {
+		            continue;
+		          }
+		        }
+
+		        bAddress[i] = xmlData.getElementsByTagName("Address")[i].firstChild.nodeValue;
+		        //bNames[i] = xmlData.getElementsByTagName("Name")[i].firstChild.nodeValue;
+
+		        Lxml=loadXMLFile("https://maps.googleapis.com/maps/api/geocode/xml?address="+bDistrict[i]+bAddress[i]+"&key=AIzaSyCuGpji_q09xilkb1ytmgIhK0_uG6OQkWo");
+		        
+		        locate1=Lxml.getElementsByTagName("lat")[0].firstChild.nodeValue;
+		        locate2=Lxml.getElementsByTagName("lng")[0].firstChild.nodeValue;
+	    
+		        contentString[i]='<div id="content">'+
+		      '<div id="siteNotice">'+
+		      '</div>'+
+		      '<h1 id="firstHeading" class="firstHeading">'+xmlData.getElementsByTagName("Name")[i].firstChild.nodeValue+'</h1>'+
+		      '<div id="bodyContent">'+
+		      '<p>區域：'+xmlData.getElementsByTagName("District")[i].firstChild.nodeValue+'</p>'+
+		      '<p>地址：'+xmlData.getElementsByTagName("Address")[i].firstChild.nodeValue+'</p>'+
+		      '<p>宗教：'+xmlData.getElementsByTagName("Religion")[i].firstChild.nodeValue+'</p>'+
+		      '<p>電話：'+xmlData.getElementsByTagName("Tel")[i].firstChild.nodeValue+'</p>'+
+		      '</div>'+
+		      '</div>';
+
+		        var image = 'css/images/bone_icon.png';
+		        markers[i]=new google.maps.Marker({
+		        position: {lat: parseFloat(locate1), lng: parseFloat(locate2)},
+		        map: map,
+		        title: xmlData.getElementsByTagName("Name")[i].firstChild.nodeValue,
+		        icon: image,
+		        html: contentString[i]
+		        });
+
+		        var marker = markers[i]
+		        google.maps.event.addListener(marker, 'click', function () {
+		        // where I have added .html to the marker object.
+		        infowindow.setContent(this.html);
+		        infowindow.open(map, this);
+		        });
+		      }
+		    }
+
+		}
+/*-------------------------------------------forEnd-------------------------------------------*/		
+
+    	</script>
+		<title>一路好走</title>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<a href="index.html">
+					<h1>一路好走-高雄市公墓暨納骨塔查詢系統</h1>
+					<img src="css/images/logo.png" alt="">
+				</a>
+			</div>
+			<div class="content">
+				<div class="bone">
+					<h2>納骨塔</h2>
+				</div>
+				<a href="grave.html">
+					<div class="grave">
+						<h2>公墓</h2>
+					</div>
+				</a>
+				<div class="clear"></div>
+				<div class="main-content">
+					<div class="select-options">
+						<img src="css/images/all_view.png" alt="">
+						<img src="css/images/eye.png" id="eye" alt="">
+						<select id="destrict" onchange="getView(this.value)">
+						    <option value="楠梓" selected="selected">楠梓</option><option value="左營">左營</option>
+						    <option value="鼓山">鼓山</option><option value="三民">三民</option>
+						    <option value="苓雅">苓雅</option><option value="新興">新興</option>
+						    <option value="前金">前金</option><option value="鹽埕">鹽埕</option>
+						    <option value="前鎮">前鎮</option><option value="旗津">旗津</option>
+						    <option value="小港">小港</option><option value="鳳山">鳳山</option>
+						    <option value="岡山">岡山</option><option value="美濃">美濃</option>
+						    <option value="旗山">旗山</option><option value="大寮">大寮</option>
+						    <option value="林園">林園</option><option value="仁武">仁武</option>
+						    <option value="路竹">路竹</option><option value="大樹">大樹</option>
+						    <option value="鳥松">鳥松</option><option value="梓官">梓官</option>
+						    <option value="橋頭">橋頭</option><option value="茄萣">茄萣</option>
+						    <option value="大社">大社</option><option value="燕巢">燕巢</option>
+						    <option value="阿蓮">阿蓮</option><option value="湖內">湖內</option>
+						    <option value="彌陀">彌陀</option><option value="內門">內門</option>
+						    <option value="六龜">六龜</option><option value="永安">永安</option>
+						    <option value="杉林">杉林</option><option value="甲寮">甲寮</option>
+						    <option value="甲仙">甲仙</option><option value="桃源">桃源</option>
+						    <option value="茂林">茂林</option><option value="那瑪夏">那瑪夏</option>
+    					</select>
+						<select id="religion" onchange="getReligion(this.value)">
+							<option value="all" selected="selected">不分宗教</option>
+							<option value="佛教">佛教</option>
+							<option value="道教">道教</option>
+							<option value="基督教">基督教</option>
+						</select>
+						<img src="css/images/nearest_view.png" alt="">
+						<img src="css/images/heart.png" id="heart" alt="">
+						<div class="address">
+							<select id="get-place-destrict">
+							    <option value="楠梓" selected="selected">楠梓</option><option value="左營">左營</option>
+							    <option value="鼓山">鼓山</option><option value="三民">三民</option>
+							    <option value="苓雅">苓雅</option><option value="新興">新興</option>
+							    <option value="前金">前金</option><option value="鹽埕">鹽埕</option>
+							    <option value="前鎮">前鎮</option><option value="旗津">旗津</option>
+							    <option value="小港">小港</option><option value="鳳山">鳳山</option>
+							    <option value="岡山">岡山</option><option value="美濃">美濃</option>
+							    <option value="旗山">旗山</option><option value="大寮">大寮</option>
+							    <option value="林園">林園</option><option value="仁武">仁武</option>
+							    <option value="路竹">路竹</option><option value="大樹">大樹</option>
+							    <option value="鳥松">鳥松</option><option value="梓官">梓官</option>
+							    <option value="橋頭">橋頭</option><option value="茄萣">茄萣</option>
+							    <option value="大社">大社</option><option value="燕巢">燕巢</option>
+							    <option value="阿蓮">阿蓮</option><option value="湖內">湖內</option>
+							    <option value="彌陀">彌陀</option><option value="內門">內門</option>
+							    <option value="六龜">六龜</option><option value="永安">永安</option>
+							    <option value="杉林">杉林</option><option value="甲寮">甲寮</option>
+							    <option value="甲仙">甲仙</option><option value="桃源">桃源</option>
+							    <option value="茂林">茂林</option><option value="那瑪夏">那瑪夏</option>
+	    					</select>
+	    					<select id="get-place-religion">
+								<option value="all" selected="selected">不分宗教</option>
+								<option value="佛教">佛教</option>
+								<option value="道教">道教</option>
+								<option value="基督教">基督教</option>
+							</select>
+	    					<input type="text" id="get-place-address" name="gpA" placeholder="輸入地址（不含城市區域）">
+							<input type="image" id="search" src="css/images/search.png" onclick="getPlace();">
+							<div class="clear"></div>
+						</div>
+							
+						<div class="clear"></div>
+					</div>
+					<div id="map"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
