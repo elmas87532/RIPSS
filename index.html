@@ -196,7 +196,7 @@
 					        marker=new google.maps.Marker({
 					        position: {lat: parseFloat(getlocate1), lng: parseFloat(getlocate2)},
 					        map: map,
-					        title: 'Hello World!',
+					        title: getname,
 					        icon: image,
 					        html: contentStr
 					        });
@@ -270,7 +270,7 @@
 		        markers[i]=new google.maps.Marker({
 		        position: {lat: parseFloat(locate1), lng: parseFloat(locate2)},
 		        map: map,
-		        title: 'Hello World!',
+		        title: xmlData.getElementsByTagName("Name")[i].firstChild.nodeValue,
 		        icon: image,
 		        html: contentString[i]
 		        });
