@@ -175,6 +175,7 @@ input,button,select,textarea{outline:none}
 footer{
 	text-align: center;
 	color: #4F4F4F;
+	margin-bottom: 20px;
 }
 @media only screen and (max-width: 1080px) {
 .wrapper{
